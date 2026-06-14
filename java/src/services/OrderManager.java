@@ -33,6 +33,6 @@ public class OrderManager {
         invoiceGenerator.generatePdfInvoice(userEmail, total);
 
         // 5- Envoi de l'email
-        notificationService.sendEmail(userEmail, "Votre commande de " + total + " euros est confirmee.");
+        notificationService.sendEmail(userEmail, "Votre commande de " + total + " FCFA est confirmee.");
     }
 }
