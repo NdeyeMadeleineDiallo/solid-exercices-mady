@@ -1,39 +1,43 @@
-import entity.Product;
-import services.InventoryManager;
-import services.InvoiceGenerator;
-import services.NotificationService;
-import services.OrderManager;
-import strategy.IDiscountStrategy;
-import strategy.VipDiscountStrategy;
+import controllers.LightController;
+import controllers.SecurityController;
+import controllers.ThermostatController;
+import devices.IDevice;
+import devices.LightDevice;
+import devices.SecurityDevice;
+import devices.ThermostatDevice;
+import java.util.ArrayList;
+import java.util.List;
+import services.SmartHomeApp;
 
 public class Main {
     public static void main(String[] args) {
-        Product product = new Product("Ordinateur HP", 300000f, 10);
 
-        InventoryManager inventoryManager = new InventoryManager();
-        InvoiceGenerator invoiceGenerator = new InvoiceGenerator();
-        NotificationService notificationService = new NotificationService();
+        // Contrôleurs
+        LightController lightController = new LightController();
+        ThermostatController thermostatController = new ThermostatController();
+        SecurityController securityController = new SecurityController();
 
-        OrderManager orderManager = new OrderManager(
-                inventoryManager,
-                invoiceGenerator,
-                notificationService
+        // Équipements
+        List<IDevice> devices = new ArrayList<>();
+        devices.add(new LightDevice());
+        devices.add(new ThermostatDevice());
+        devices.add(new SecurityDevice());
+
+        // Application
+        SmartHomeApp smartHomeApp = new SmartHomeApp(
+                lightController,
+                thermostatController,
+                securityController,
+                devices
         );
 
-        IDiscountStrategy discountStrategy = new VipDiscountStrategy();
+        // Tests
+        smartHomeApp.turnOnLight("Salon");
+        smartHomeApp.setTemperature(22.5f);
+        smartHomeApp.lockDoors();
 
-        try {
-            orderManager.processOrder(
-                    product,
-                    2,
-                    discountStrategy,
-                    "mady@gmail.com"
-            );
+        System.out.println();
 
-            System.out.println("Stock restant : " + product.getStock());
-
-        } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
-        }
+        smartHomeApp.turnOffAll();
     }
 }
